@@ -1,6 +1,10 @@
 import React from "react";
 import { Segment, Modal, Button, Image, Header } from "semantic-ui-react";
 
+import logo from "../assets/logo.png";
+
+import axios from "axios";
+
 // const Results = ({ result, similarMatches, exactMatches, open, setOpen }) => {
 // 	return (
 // 		<Modal
@@ -22,11 +26,37 @@ import { Segment, Modal, Button, Image, Header } from "semantic-ui-react";
 const Results = (props) => {
 	const [open, setOpen] = React.useState(false);
 
+	const [highestUserResult, setHighestUserResult] = React.useState(0);
+	const [similarUserMatches, setSimilarUserMatches] = React.useState(0);
+	const [exactUserMatches, setExactUserMatches] = React.useState(0);
+
 	let probabilityMarkup = null;
 	const result = `${(props.highestResult * 100).toFixed(2)}%`;
 	const score = props.highestResult;
 	const similarMatches = props.similarMatches;
 	const exactMatches = props.exactMatches;
+
+	const handleClick = () => {
+		axios
+			.post("/submit/userphish", {
+				body: props.body,
+				sender: props.sender,
+			})
+			.then((res) => {
+				console.log(res);
+				for (let i = 0; i < res.data.similarToUser.length; i++) {
+					if (res.data.scoreToUser[i] > highestUserResult) {
+						setHighestUserResult(res.data.scoreToUser[i]);
+						setSimilarUserMatches(res.data.similarToUser[i]);
+						setExactUserMatches(res.data.exactMatchesToUser[i]);
+					}
+				}
+				console.log("hello");
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
 
 	if (score < 0.2) {
 		probabilityMarkup = (
@@ -43,36 +73,36 @@ const Results = (props) => {
 					onClose={() => setOpen(false)}
 					onOpen={() => setOpen(true)}
 					open={open}
-					trigger={<Button primary>Show Modal</Button>}
+					trigger={
+						<Button primary onClick={handleClick}>
+							Search crowdsourced database
+						</Button>
+					}
 				>
-					<Modal.Header>Select a Photo</Modal.Header>
+					<Modal.Header>
+						Thank you for reporting the phish!
+					</Modal.Header>
 					<Modal.Content image>
-						<Image
-							size="medium"
-							src="https://react.semantic-ui.com/images/avatar/large/rachel.png"
-							wrapped
-						/>
+						<Image size="medium" src={logo} wrapped />
 						<Modal.Description>
-							<Header>Default Profile Image</Header>
+							<Header color="blue">
+								There is a{" "}
+								{(highestUserResult * 100).toFixed(2)}% chance
+								that your email is a phish.
+							</Header>
+							<h4>
+								At least {similarUserMatches} students have
+								flagged a similar email as a phish.
+							</h4>
+							<h4>
+								{exactUserMatches} students got the exact same
+								email and thought it was a phish.
+							</h4>
 							<p>
-								We've found the following gravatar image
-								associated with your e-mail address.
+								Thank you for making our school a safer place!
 							</p>
-							<p>Is it okay to use this photo?</p>
 						</Modal.Description>
 					</Modal.Content>
-					<Modal.Actions>
-						<Button color="black" onClick={() => setOpen(false)}>
-							Nope
-						</Button>
-						<Button
-							content="Yep, that's me"
-							labelPosition="right"
-							icon="checkmark"
-							onClick={() => setOpen(false)}
-							positive
-						/>
-					</Modal.Actions>
 				</Modal>
 			</div>
 		);

@@ -77,6 +77,8 @@ class Search extends Component {
             highestResult={highestResult}
             similarMatches={similarMatches}
             exactMatches={exactMatches}
+            sender={sender}
+            body={body}
           />
         )}
       </div>
