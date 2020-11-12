@@ -179,7 +179,7 @@ app.post("/submit/userphish", (req, res) => {
 					userResponse.similarToUser.push(newSimilarTo);
 					userResponse.exactMatchesToUser.push(newExactMatches);
 					userResponse.scoreToUser.push(score);
-					db.doc(`/emailData/${email.id}`)
+					db.doc(`/submittedEmailData/${email.id}`)
 						.get()
 						.then(() => {
 							return db
@@ -198,7 +198,7 @@ app.post("/submit/userphish", (req, res) => {
 					userResponse.similarToUser.push(newSimilarTo);
 					userResponse.exactMatchesToUser.push(email.exactMatches);
 					userResponse.scoreToUser.push(score);
-					db.doc(`/emailData/${email.id}`)
+					db.doc(`/submittedEmailData/${email.id}`)
 						.get()
 						.then(() => {
 							return db
@@ -212,25 +212,28 @@ app.post("/submit/userphish", (req, res) => {
 							return res.status(500).json({ error: err.code });
 						});
 				} else {
-					db.collection("submittedEmailData")
-						.add({
-							body: userSubmission.body,
-							sender: userSubmission.sender,
-							exactMatches: 1,
-							similarTo: 1,
-						})
-						.then(() => {
-							userResponse.similarToUser.push(0);
-							userResponse.exactMatchesToUser.push(0);
-							userResponse.scoreToUser.push(score);
-						})
-						.catch((err) => {
-							console.error(err);
-						});
+					userResponse.similarToUser.push(0);
+					userResponse.exactMatchesToUser.push(0);
+					userResponse.scoreToUser.push(score);
 				}
-
 				matchesScores.push(score);
 			});
+
+			if (userResponse.similarToUser.every((match) => match === 0)) {
+				db.collection("submittedEmailData")
+					.add({
+						body: userSubmission.body,
+						sender: userSubmission.sender,
+						exactMatches: 1,
+						similarTo: 1,
+					})
+					.then(() => {
+						console.log("new thing");
+					})
+					.catch((err) => {
+						console.error(err);
+					});
+			}
 
 			return res.json(userResponse);
 		})
