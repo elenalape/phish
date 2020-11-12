@@ -224,8 +224,8 @@ app.post("/submit/userphish", (req, res) => {
 					.add({
 						body: userSubmission.body,
 						sender: userSubmission.sender,
-						exactMatches: 1,
-						similarTo: 1,
+						exactMatches: 0,
+						similarTo: 0,
 					})
 					.then(() => {
 						console.log("new thing");
