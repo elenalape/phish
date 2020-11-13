@@ -24,8 +24,6 @@ class Search extends Component {
 
   handleSubmit = () => {
     const { body, sender } = this.state;
-    console.log(body);
-    console.log(sender);
     axios
       .post("/submit/phish", { body: body, sender: sender })
       .then((res) => {
