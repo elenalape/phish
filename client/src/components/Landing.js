@@ -10,7 +10,7 @@ const Landing = () => {
 		<Container>
 			<Grid centered columns={3}>
 				<Grid.Row style={{ paddingTop: "5em" }}>
-					<Image size="small" src={logo} />
+					<Image size="medium" src={logo} />
 				</Grid.Row>
 			</Grid>
 			<Search style={{ marginBottom: "40px" }} />
