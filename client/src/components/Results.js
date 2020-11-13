@@ -27,9 +27,9 @@ class Results extends Component {
 	state = {
 		body: "",
 		sender: "",
-		similarMatches: 0,
-		exactMatches: 0,
-		highestResult: 0,
+		similarMatches: this.props.similarMatches,
+		exactMatches: this.props.exactMatches,
+		highestResult: this.props.highestResult,
 		open: false,
 		highestUserResult: 0,
 		similarUserMatches: 0,
@@ -76,6 +76,7 @@ class Results extends Component {
 	render() {
 		let probabilityMarkup = null;
 		const result = `${(this.props.highestResult * 100).toFixed(2)}%`;
+		console.log(result);
 		const score = this.props.highestResult;
 		const similarMatches = this.props.similarMatches;
 		const exactMatches = this.props.exactMatches;
@@ -139,11 +140,10 @@ class Results extends Component {
 				<div>
 					<h4>
 						The likelihood of your email being a phish is{" "}
-						<span style={{ color: "pink" }}>high</span>:{" "}
-						{this.state.result}.
+						<span style={{ color: "pink" }}>high</span>: {result}.
 					</h4>
 					<h5>
-						{this.state.similarMatches} people have flagged a
+						{this.props.similarMatches} people have flagged a
 						similar email to be a phish.
 					</h5>
 				</div>
@@ -154,12 +154,12 @@ class Results extends Component {
 					<h4>
 						The likelihood of your email being a phish is{" "}
 						<span style={{ color: "red" }}>very high</span>:{" "}
-						{this.state.result}.
+						{result}.
 					</h4>
 					<h5>
-						{this.state.similarMatches} people have flagged a
+						{this.props.similarMatches} people have flagged a
 						similar email to be a phish and{" "}
-						{this.state.exactMatches} got the exact same one!
+						{this.props.exactMatches} got the exact same one!
 					</h5>
 				</div>
 			);
