@@ -13,6 +13,7 @@ class Search extends Component {
     exactMatches: 0,
     highestResult: 0,
     open: true,
+    senderMatch: false,
   };
 
   setOpen = () => {
@@ -27,6 +28,7 @@ class Search extends Component {
     axios
       .post("/submit/phish", { body: body, sender: sender })
       .then((res) => {
+        this.setState({ senderMatch: res.data.senderMatches });
         for (let i = 0; i < res.data.similarToUser.length; i++) {
           if (res.data.scoreToUser[i] > this.state.highestResult) {
             this.setState({
@@ -49,6 +51,7 @@ class Search extends Component {
       highestResult,
       similarMatches,
       exactMatches,
+      senderMatch,
     } = this.state;
     return (
       <div>
@@ -76,6 +79,7 @@ class Search extends Component {
             similarMatches={similarMatches}
             exactMatches={exactMatches}
             sender={sender}
+            senderMatch={senderMatch}
             body={body}
           />
         )}

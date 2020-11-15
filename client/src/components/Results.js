@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { Segment, Modal, Button, Image, Header } from "semantic-ui-react";
+import {
+	Segment,
+	Modal,
+	Button,
+	Image,
+	Header,
+	Label,
+} from "semantic-ui-react";
 
 import logo from "../assets/logo.png";
 
@@ -25,8 +32,6 @@ import axios from "axios";
 
 class Results extends Component {
 	state = {
-		body: "",
-		sender: "",
 		similarMatches: this.props.similarMatches,
 		exactMatches: this.props.exactMatches,
 		highestResult: this.props.highestResult,
@@ -34,6 +39,8 @@ class Results extends Component {
 		highestUserResult: 0,
 		similarUserMatches: 0,
 		exactUserMatches: 0,
+		senderMatchAdmin: this.props.senderMatch,
+		senderMatchUser: false,
 	};
 
 	// const [open, setOpen] = React.useState(false);
@@ -49,6 +56,10 @@ class Results extends Component {
 				sender: this.props.sender,
 			})
 			.then((res) => {
+				if (this.props.sender === res.data.senderMatches) {
+					this.setState({ senderMatchUser: true });
+				}
+
 				for (let i = 0; i < res.data.similarToUser.length; i++) {
 					// console.log(res.data.scoreToUser[i]);
 					// console.log(highestUserResult);
@@ -58,11 +69,7 @@ class Results extends Component {
 						const score = res.data.scoreToUser[i];
 						const similar = res.data.similarToUser[i];
 						const exact = res.data.exactMatchesToUser[i];
-						// console.log("score before update");
-						// console.log(score);
 						this.setState({ highestUserResult: score });
-						// console.log("after state update");
-						// console.log(highestUserResult);
 						this.setState({ similarUserMatches: similar });
 						this.setState({ exactUserMatches: exact });
 					}
@@ -75,22 +82,33 @@ class Results extends Component {
 
 	render() {
 		let probabilityMarkup = null;
+		let senderMatchMarkup = null;
 		const result = `${(this.props.highestResult * 100).toFixed(2)}%`;
-		console.log(result);
 		const score = this.props.highestResult;
 		const similarMatches = this.props.similarMatches;
 		const exactMatches = this.props.exactMatches;
 
-		if (score < 0.2) {
+		if (this.state.senderMatchAdmin) {
+			senderMatchMarkup = (
+				<div style={{ float: "right" }}>
+					<Label as="a" color="red" tag>
+						{this.props.sender} has been flagged as a bad actor
+						before.
+					</Label>
+				</div>
+			);
+		}
+
+		if (score < 0.4) {
 			probabilityMarkup = (
 				<div>
+					{senderMatchMarkup}
 					<h4>
-						The likelihood of your email being a phish is{" "}
-						<span style={{ color: "green" }}>very low</span>:{" "}
-						{result}.
+						The probability of your email being a phish is{" "}
+						<span style={{ color: "green" }}>low</span>: {result}.
 					</h4>
 					<h5>
-						According to the official records, no significantly
+						According to known phish records, no significantly
 						similar emails were found.
 					</h5>
 					<Modal
@@ -104,17 +122,18 @@ class Results extends Component {
 						}
 					>
 						<Modal.Header>
-							Thank you for reporting the phish!
+							Thank you for reporting a suspicious email!
 						</Modal.Header>
 						<Modal.Content image>
 							<Image size="medium" src={logo} wrapped />
 							<Modal.Description>
 								<Header color="blue">
-									There is a{" "}
+									Your email matches another user submitted
+									phish by{" "}
 									{(
 										this.state.highestUserResult * 100
 									).toFixed(2)}
-									% chance that your email is a phish.
+									%.
 								</Header>
 								<h4>
 									At least {this.state.similarUserMatches}{" "}
@@ -126,6 +145,12 @@ class Results extends Component {
 									the exact same email and thought it was a
 									phish.
 								</h4>
+								{this.state.senderMatchUser ? (
+									<h4>
+										The sender has been reported as
+										suspicious.
+									</h4>
+								) : null}
 								<p>
 									Thank you for making our school a safer
 									place!
@@ -138,9 +163,12 @@ class Results extends Component {
 		} else if (score < 0.7) {
 			probabilityMarkup = (
 				<div>
+					{senderMatchMarkup}
 					<h4>
-						The likelihood of your email being a phish is{" "}
-						<span style={{ color: "pink" }}>high</span>: {result}.
+						The content of your email matches a known phishing
+						scenario to a{" "}
+						<span style={{ color: "pink" }}>high extent</span>:{" "}
+						{result}.
 					</h4>
 					<h5>
 						{this.props.similarMatches} people have flagged a
@@ -151,9 +179,11 @@ class Results extends Component {
 		} else {
 			probabilityMarkup = (
 				<div>
+					{senderMatchMarkup}
 					<h4>
-						The likelihood of your email being a phish is{" "}
-						<span style={{ color: "red" }}>very high</span>:{" "}
+						The content of your email matches a known phishing
+						scenario to a{" "}
+						<span style={{ color: "red" }}>very high extent</span>:{" "}
 						{result}.
 					</h4>
 					<h5>
