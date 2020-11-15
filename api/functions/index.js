@@ -17,6 +17,14 @@ const {
 	reduceUserDetails,
 } = require("./util/validators");
 
+//helper function
+const isFamiliarEmail = (sender, recipient) => {
+	if (sender.toLowerCase() === recipient.toLowerCase()) {
+		return true;
+	}
+	return false;
+};
+
 // Log user in
 app.post("/login", (req, res) => {
 	const user = {
@@ -64,6 +72,7 @@ app.post("/submit/phish", (req, res) => {
 				emailData.push({
 					id: doc.id,
 					emailBody: doc.data().body,
+					sender: doc.data().sender,
 					exactMatches: doc.data().exactMatches,
 					similarTo: doc.data().similarTo,
 				});
@@ -74,6 +83,7 @@ app.post("/submit/phish", (req, res) => {
 				similarToUser: [],
 				exactMatchesToUser: [],
 				scoreToUser: [],
+				senderMatches: false,
 			};
 
 			emailData.forEach((email) => {
@@ -82,12 +92,17 @@ app.post("/submit/phish", (req, res) => {
 					email.emailBody
 				);
 
+				if (isFamiliarEmail(email.sender, userSubmission.sender)) {
+					userResponse.senderMatches = true;
+				}
+
 				if (score > 0.85) {
 					const newExactMatches = email.exactMatches + 1;
 					const newSimilarTo = email.similarTo + 1;
 					userResponse.similarToUser.push(newSimilarTo);
 					userResponse.exactMatchesToUser.push(newExactMatches);
 					userResponse.scoreToUser.push(score);
+
 					db.doc(`/emailData/${email.id}`)
 						.get()
 						.then(() => {
@@ -154,6 +169,7 @@ app.post("/submit/userphish", (req, res) => {
 			data.forEach((doc) => {
 				emailData.push({
 					id: doc.id,
+					sender: doc.data().sender,
 					emailBody: doc.data().body,
 					exactMatches: doc.data().exactMatches,
 					similarTo: doc.data().similarTo,
@@ -165,6 +181,7 @@ app.post("/submit/userphish", (req, res) => {
 				similarToUser: [],
 				exactMatchesToUser: [],
 				scoreToUser: [],
+				senderMatches: false,
 			};
 
 			emailData.forEach((email) => {
@@ -172,6 +189,10 @@ app.post("/submit/userphish", (req, res) => {
 					userSubmission.body,
 					email.emailBody
 				);
+
+				if (isFamiliarEmail(email.sender, userSubmission.sender)) {
+					userResponse.senderMatches = true;
+				}
 
 				if (score > 0.85) {
 					const newExactMatches = email.exactMatches + 1;

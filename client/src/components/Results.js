@@ -81,13 +81,12 @@ class Results extends Component {
 		const similarMatches = this.props.similarMatches;
 		const exactMatches = this.props.exactMatches;
 
-		if (score < 0.2) {
+		if (score < 0.4) {
 			probabilityMarkup = (
 				<div>
 					<h4>
 						The likelihood of your email being a phish is{" "}
-						<span style={{ color: "green" }}>very low</span>:{" "}
-						{result}.
+						<span style={{ color: "green" }}>low</span>: {result}.
 					</h4>
 					<h5>
 						According to the official records, no significantly
