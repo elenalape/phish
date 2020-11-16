@@ -7,6 +7,11 @@ import Navbar from "./components/Navbar";
 import Landing from "./components/Landing";
 import Mockup from "./components/Mockup";
 
+import axios from "axios";
+
+axios.defaults.baseURL =
+	"https://europe-west2-college-phish-api.cloudfunctions.net/api";
+
 function App() {
 	return (
 		<Container>
