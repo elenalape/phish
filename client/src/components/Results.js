@@ -104,7 +104,7 @@ class Results extends Component {
 				<div>
 					{senderMatchMarkup}
 					<h4>
-						The probability of your email being a phish is{" "}
+						The likelihood of your email being a phish is{" "}
 						<span style={{ color: "green" }}>low</span>: {result}.
 					</h4>
 					<h5>
@@ -128,8 +128,8 @@ class Results extends Component {
 							<Image size="medium" src={logo} wrapped />
 							<Modal.Description>
 								<Header color="blue">
-									Your email matches another user submitted
-									phish by{" "}
+									Your email content matches another user
+									submitted phish by{" "}
 									{(
 										this.state.highestUserResult * 100
 									).toFixed(2)}
