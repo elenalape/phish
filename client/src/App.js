@@ -5,7 +5,6 @@ import "./App.css";
 import { Container } from "semantic-ui-react";
 import Navbar from "./components/Navbar";
 import Landing from "./components/Landing";
-import Mockup from "./components/Mockup";
 
 import axios from "axios";
 
@@ -18,7 +17,6 @@ function App() {
 			<Router>
 				<Navbar />
 				<Route exact path="/" component={Landing} />
-				<Route exact path="/ok" component={Mockup} />
 			</Router>
 		</Container>
 	);

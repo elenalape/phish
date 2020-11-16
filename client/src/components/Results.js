@@ -9,27 +9,10 @@ import {
 } from "semantic-ui-react";
 
 import logo from "../assets/logo.png";
-
 import axios from "axios";
 
-// const Results = ({ result, similarMatches, exactMatches, open, setOpen }) => {
-// 	return (
-// 		<Modal
-// 			color="blue"
-// 			small
-// 			open={open}
-// 			closeIcon
-// 			onClose={() => setOpen(false)}
-// 			onOpen={() => setOpen(true)}
-// 		>
-// 			<Modal.Header>Results</Modal.Header>
-// 			<Modal.Content>
-// 				The likelihood of your email being a phish is {result}.
-// 			</Modal.Content>
-// 		</Modal>
-// 	);
-// };
-
+// whoever is reading this i am SORRY
+// hackathon code allows for bad variable names ok ;)
 class Results extends Component {
 	state = {
 		similarMatches: this.props.similarMatches,
@@ -43,12 +26,6 @@ class Results extends Component {
 		senderMatchUser: false,
 	};
 
-	// const [open, setOpen] = React.useState(false);
-
-	// const [highestUserResult, setHighestUserResult] = React.useState(0);
-	// const [similarUserMatches, setSimilarUserMatches] = React.useState(0);
-	// const [exactUserMatches, setExactUserMatches] = React.useState(0);
-
 	handleClick = () => {
 		axios
 			.post("/submit/userphish", {
@@ -61,8 +38,6 @@ class Results extends Component {
 				}
 
 				for (let i = 0; i < res.data.similarToUser.length; i++) {
-					// console.log(res.data.scoreToUser[i]);
-					// console.log(highestUserResult);
 					if (
 						res.data.scoreToUser[i] > this.state.highestUserResult
 					) {

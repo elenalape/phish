@@ -1,6 +1,5 @@
 import React, { Link, useState } from "react";
 import { useForm } from "react-hook-form";
-//import { NavLink } from "react-router-dom";
 import {
   Menu,
   Container,
@@ -27,31 +26,21 @@ const Navbar = () => {
     setUserData({ [target.name]: target.value });
   };
 
-  // const onChangeEmail = (event) =>
-  //   setUserData({ ...userData, email: event.target.value });
-  // const onChangePassword = (event) =>
-  //   setUserData({ ...userData, password: event.target.value });
-
-  const closeFirstUponSecond = (userData) => {
-    console.log(userData);
-    // axios
-    //   .post("/login", userData)
-    //   .then((res) => {
-    //     console.log(res);
-    //     setSecondOpen(true);
-    //     setFirstOpen(false);
-    //     // history.push("/");
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-  };
+  const closeFirstUponSecond = (userData) => {};
 
   return (
     <Menu fixed="top" inverted borderless>
       <Container>
         <Menu.Item as="a" header disabled>
           <Image size="small" src={logo} style={{ marginRight: "1.5em" }} />
+        </Menu.Item>
+        <Menu.Item
+          href="https://github.com/elenalape/collegephish"
+          target="_blank"
+          header
+          color="white"
+        >
+          Check it out on GitHub
         </Menu.Item>
         <Menu.Item as="a" position="right" disabled>
           <Button onClick={() => setFirstOpen(true)}>Admin</Button>

@@ -20,7 +20,6 @@ class Search extends Component {
     this.setState({ open: true });
   };
 
-  //handleChange = (e, { value }) => this.setState({ value });
   handleChange = (e, { name, value }) => this.setState({ [name]: value });
 
   handleSubmit = () => {
